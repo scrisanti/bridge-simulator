@@ -35,7 +35,9 @@ func Deal(players []Player) {
 	}
 
 	for i, player := range players {
+		Logger.Info(fmt.Sprintf("Initializing %s", player.Name()))
 		player.ReceiveHand(hands[i])
+		player.EvaluateHand(hands[i])
 	}
 
 	Logger.Info(fmt.Sprintf("Dealt %d cards", len(deck)))
