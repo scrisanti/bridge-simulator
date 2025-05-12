@@ -7,6 +7,7 @@ import (
 //  This is the main game entry point
 
 func main() {
+
 	players := []Player{
 		&RandomBot{name: "North"},
 		&RandomBot{name: "East"},
@@ -17,7 +18,7 @@ func main() {
 	Deal(players)
 
 	for _, p := range players {
-		fmt.Printf("%s bids: %s\n", p.Name(), p.Bid())
+		Logger.Info(fmt.Sprintf("%s bids: %s", p.Name(), p.Bid()))
 	}
 
 	// Play 13 tricks (simplified)
@@ -25,7 +26,7 @@ func main() {
 		var trick Trick
 		for _, p := range players {
 			card := p.PlayCard(trick)
-			fmt.Printf("%s plays %s\n", p.Name(), card)
+			Logger.Info(fmt.Sprintf("%s plays %s", p.Name(), card))
 			trick.Cards = append(trick.Cards, card)
 		}
 		fmt.Println("--- End of Trick ---")

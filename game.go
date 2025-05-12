@@ -1,8 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
-	"time"
+	// "time"
 )
 
 func NewDeck() []Card {
@@ -16,17 +17,27 @@ func NewDeck() []Card {
 }
 
 func Shuffle(deck []Card) {
-	rand.Seed(time.Now().UnixNano())
+	// rand.Seed(time.Now().UnixNano())
 	rand.Shuffle(len(deck), func(i, j int) {
 		deck[i], deck[j] = deck[j], deck[i]
 	})
+	Logger.Info("The Deck has been shuffled")
 }
 
 func Deal(players []Player) {
 	deck := NewDeck()
+	Logger.Info("Retrieved a new deck...")
 	Shuffle(deck)
+
+	hands := make([][]Card, len(players))
 	for i, card := range deck {
-		player := players[i%len(players)]
-		player.ReceiveHand(append([]Card{}, card)) // send a copy of each card
+		hands[i%len(players)] = append(hands[i%len(players)], card)
 	}
+
+	for i, player := range players {
+		player.ReceiveHand(hands[i])
+	}
+
+	Logger.Info(fmt.Sprintf("Dealt %d cards", len(deck)))
+
 }

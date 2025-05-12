@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 )
 
@@ -28,6 +29,7 @@ func (rb *RandomBot) Name() string {
 
 func (rb *RandomBot) ReceiveHand(hand []Card) {
 	rb.hand = hand
+	Logger.Debug(fmt.Sprintf("This hand has %v cards", len(hand)))
 }
 
 func (rb *RandomBot) Bid() string {
@@ -41,5 +43,6 @@ func (rb *RandomBot) PlayCard(trick Trick) Card {
 	i := rand.Intn(len(rb.hand))
 	card := rb.hand[i]
 	rb.hand = append(rb.hand[:i], rb.hand[i+1:]...) // remove played card
+	Logger.Debug(fmt.Sprintf("%v", rb.hand))
 	return card
 }
