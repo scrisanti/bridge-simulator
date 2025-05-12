@@ -2,28 +2,35 @@ package main
 
 import (
 	"fmt"
-	"math/rand"
-	"time"
+	"player"
 )
 
-type Suit string
-type Rank string
+//  This is the main game entry point
 
-const (
-	Spades   Suit = "S"
-	Hearts   Suit = "H"
-	Diamonds Suit = "D"
-	Clubs    Suit = "C"
-)
+func main() {
+	players := []Player{
+		&RandomBot{name: "North"},
+		&RandomBot{name: "East"},
+		&RandomBot{name: "South"},
+		&RandomBot{name: "West"},
+	}
 
-var Suits = []Suit{Spades, Hearts, Clubs, Diamonds}
-var Ranks = []Rank{"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
+	Deal(players)
 
-type Card struct {
-	Suit Suit
-	Rank Rank
-}
+	for _, p := range players {
+		fmt.Printf("%s bids: %s\n", p.Name(), p.Bid())
+	}
 
-func (c Card) String() string {
-	fmt.Sprintf("%s%s", c.Rank, c.Suit)
+	// Play 13 tricks (simplified)
+	for i := 0; i < 13; i++ {
+		var trick Trick
+		for _, p := range players {
+			card := p.PlayCard(trick)
+			fmt.Printf("%s plays %s\n", p.Name(), card)
+			trick.Cards = append(trick.Cards, card)
+		}
+		fmt.Println("--- End of Trick ---")
+	}
+
+	fmt.Println("Game Over")
 }
