@@ -7,6 +7,7 @@ import (
 //  This is the main game entry point
 
 func main() {
+	Logger.Info(" --------- Starting New Game -------------- ")
 
 	players := []Player{
 		&RandomBot{name: "North"},
@@ -29,7 +30,8 @@ func main() {
 			Logger.Info(fmt.Sprintf("%s plays %s", p.Name(), card))
 			trick.Cards = append(trick.Cards, card)
 		}
-		fmt.Println("--- End of Trick ---")
+		// Analyze Outcome of the trick HERE
+		Logger.Info("--- End of Trick ---")
 	}
 
 	fmt.Println("Game Over")
