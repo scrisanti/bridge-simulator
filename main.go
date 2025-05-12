@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"player"
 )
 
 //  This is the main game entry point
