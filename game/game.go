@@ -16,12 +16,22 @@ func Start() {
 		player.NewBasicPlayer("South"),
 		player.NewBasicPlayer("West"),
 	}
+
 	deck := card.NewDeck()
 	deal(card.Shuffle(deck), players)
+
+	rules := []bidding.BidRule{
+		bidding.OneNoTrumpRule{},
+		bidding.FiveCardMajorRule{},
+		// Add more rules as needed
+	}
+
 	for _, player := range players {
 		log.Logger.Debug(fmt.Sprintf(" ---- Player %s ----", player.GetName()))
 		evalResults := bidding.AnalyzeHand(player.GetHand())
 		log.Logger.Debug(fmt.Sprintf("%+v", evalResults))
+		bid := bidding.ChooseOpeningBid(evalResults, rules)
+		log.Logger.Info(fmt.Sprintf("%v Bid: %v", player.GetName(), bid))
 	}
 }
 
