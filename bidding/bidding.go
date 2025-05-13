@@ -6,6 +6,10 @@ import (
 	"github.com/scrisanti/bridge-simulator/log"
 )
 
+type Bid struct {
+	Level int
+	Trump card.Suit
+}
 type HandFeatures struct {
 	HCP           int
 	SuitLengths   map[card.Suit]int
@@ -66,4 +70,43 @@ func AnalyzeHand(hand []card.Card) HandFeatures {
 		NumSingletons: singletons,
 		NumDoubletons: doubletons,
 	}
+}
+
+type BidRule interface {
+	Apply(handEval HandFeatures) (Bid, bool)
+}
+
+func PassBid() Bid {
+	return Bid{Level: 0, Trump: ""}
+}
+
+type OneNoTrumpRule struct{}
+
+// 15-17 points and has a balanced hand
+func (r OneNoTrumpRule) Apply(handEval HandFeatures) (Bid, bool) {
+	if handEval.IsBalanced && handEval.HCP >= 15 && handEval.HCP <= 17 {
+		return Bid{Level: 1, Trump: "NoTrump"}, true
+	}
+	return Bid{}, false
+}
+
+type FiveCardMajorRule struct{}
+
+// 13 or more points with a 5 card major
+func (r FiveCardMajorRule) Apply(f HandFeatures) (Bid, bool) {
+	majors := []card.Suit{card.Spades, card.Hearts}
+	for _, s := range majors {
+		if f.HCP >= 13 && f.SuitLengths[s] >= 5 {
+			return Bid{Level: 1, Trump: s}, true
+		}
+	}
+	return Bid{}, false
+}
+func ChooseOpeningBid(features HandFeatures, rules []BidRule) Bid {
+	for _, rule := range rules {
+		if bid, ok := rule.Apply(features); ok {
+			return bid
+		}
+	}
+	return PassBid()
 }
