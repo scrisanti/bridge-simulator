@@ -17,3 +17,11 @@ The game is loosly split into three sections: Dealing, Bidding, and Playing Card
 ## Bidding
 
 ## Playing
+
+# TODO
+
+- Determine who has won a trick and keep track of it
+- "Smart Biddings"
+- Establish trump suits
+- Basic Logic for card playing
+- USer interaction
