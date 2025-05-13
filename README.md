@@ -14,6 +14,8 @@ The game is loosly split into three sections: Dealing, Bidding, and Playing Card
 
 ## Dealing
 
+At the start of each new game, a new deck is created and shuffled. Then 13 cards are dealt to each player and the opening hands are anlayzed.
+
 ## Bidding
 
 ## Playing
