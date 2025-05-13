@@ -11,7 +11,7 @@ import (
 
 var Logger *slog.Logger
 
-func init() {
+func Init(filename string) {
 	// Get User Home Dir
 	usr, err := user.Current()
 	if err != nil {
@@ -21,12 +21,12 @@ func init() {
 
 	// Log To Standard Dir
 	logDir := filepath.Join(home, "logs")
-	logFilename := "bridge-player.log"
+	logFilename := filename
 	logFP := filepath.Join(logDir, logFilename)
-	InitLogger(logFP) // or pass this in from elsewhere if needed
+	configure(logFP) // or pass this in from elsewhere if needed
 }
 
-func InitLogger(logFilePath string) {
+func configure(logFilePath string) {
 	// Open log file
 	f, err := os.OpenFile(logFilePath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
 	if err != nil {

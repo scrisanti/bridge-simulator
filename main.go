@@ -8,7 +8,7 @@ import (
 //  This is the main game entry point
 
 func main() {
-	log.InitLogger("bridge.log")
-	log.Logger.Info("------- Starting Game -------- ")
+	log.Init("bridge.log")
+	log.Logger.Info("------- Let's Play Bridge! -------- ")
 	game.Start()
 }
