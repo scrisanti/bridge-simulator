@@ -1,45 +1,26 @@
-package main
+package game
 
 import (
-	"fmt"
-	"math/rand"
-	// "time"
+	"github.com/scrisanti/bridge-simulator/card"
+	"github.com/scrisanti/bridge-simulator/log"
+	"github.com/scrisanti/bridge-simulator/player"
 )
 
-func NewDeck() []Card {
-	var deck []Card
-	for _, suit := range Suits {
-		for _, rank := range Ranks {
-			deck = append(deck, Card{Suit: suit, Rank: rank})
-		}
+func Start() {
+	log.Logger.Info("Starting new game...")
+	players := []player.Player{
+		&player.BasicPlayer{},
+		&player.BasicPlayer{},
+		&player.BasicPlayer{},
+		&player.BasicPlayer{},
 	}
-	return deck
+	deck := card.NewDeck()
+	deal(deck, players)
 }
 
-func Shuffle(deck []Card) {
-	// rand.Seed(time.Now().UnixNano())
-	rand.Shuffle(len(deck), func(i, j int) {
-		deck[i], deck[j] = deck[j], deck[i]
-	})
-	Logger.Info("The Deck has been shuffled")
-}
-
-func Deal(players []Player) {
-	deck := NewDeck()
-	Logger.Info("Retrieved a new deck...")
-	Shuffle(deck)
-
-	hands := make([][]Card, len(players))
-	for i, card := range deck {
-		hands[i%len(players)] = append(hands[i%len(players)], card)
+func deal(deck []card.Card, players []player.Player) {
+	log.Logger.Info("Dealing cards...")
+	for i, c := range deck {
+		players[i%len(players)].ReceiveCard(c)
 	}
-
-	for i, player := range players {
-		Logger.Info(fmt.Sprintf("Initializing %s", player.Name()))
-		player.ReceiveHand(hands[i])
-		player.EvaluateHand(hands[i])
-	}
-
-	Logger.Info(fmt.Sprintf("Dealt %d cards", len(deck)))
-
 }

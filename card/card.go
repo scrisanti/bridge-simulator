@@ -1,27 +1,28 @@
-package main
-
-import (
-	"fmt"
-)
+package card
 
 type Suit string
-type Rank string
 
 const (
 	Spades   Suit = "S"
 	Hearts   Suit = "H"
 	Diamonds Suit = "D"
 	Clubs    Suit = "C"
+	NoTrump  Suit = "NT"
 )
 
-var Suits = []Suit{Spades, Hearts, Clubs, Diamonds}
-var Ranks = []Rank{"2", "3", "4", "5", "6", "7", "8", "9", "T", "J", "Q", "K", "A"}
-
 type Card struct {
-	Suit Suit
-	Rank Rank
+	Suit  Suit
+	Value string
 }
 
-func (c Card) String() string {
-	return fmt.Sprintf("%s%s", c.Rank, c.Suit)
+func NewDeck() []Card {
+	values := []string{"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"}
+	suits := []Suit{Spades, Hearts, Diamonds, Clubs}
+	var deck []Card
+	for _, s := range suits {
+		for _, v := range values {
+			deck = append(deck, Card{Suit: s, Value: v})
+		}
+	}
+	return deck
 }
