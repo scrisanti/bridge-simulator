@@ -59,6 +59,7 @@ func AnalyzeHand(hand []card.Card) HandFeatures {
 			longest = suit
 		}
 	}
+	// TODO: Calculate points in longest suit (another loop?)
 
 	balanced := (voids == 0 && singletons == 0 && doubletons <= 1)
 	return HandFeatures{
@@ -102,6 +103,10 @@ func (r FiveCardMajorRule) Apply(f HandFeatures) (Bid, bool) {
 	}
 	return Bid{}, false
 }
+
+// TODO Minor suit opening rule
+// TODO: 2 Clubs rule
+
 func ChooseOpeningBid(features HandFeatures, rules []BidRule) Bid {
 	for _, rule := range rules {
 		if bid, ok := rule.Apply(features); ok {
