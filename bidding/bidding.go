@@ -11,13 +11,14 @@ type Bid struct {
 	Trump card.Suit
 }
 type HandFeatures struct {
-	HCP           int
-	SuitLengths   map[card.Suit]int
-	IsBalanced    bool
-	LongestSuit   card.Suit
-	NumVoids      int
-	NumSingletons int
-	NumDoubletons int
+	HCP               int
+	SuitLengths       map[card.Suit]int
+	IsBalanced        bool
+	LongestSuit       card.Suit
+	LongestSuitLength int
+	NumVoids          int
+	NumSingletons     int
+	NumDoubletons     int
 }
 
 func AnalyzeHand(hand []card.Card) HandFeatures {
@@ -42,9 +43,11 @@ func AnalyzeHand(hand []card.Card) HandFeatures {
 		}
 	}
 
+	// Init everythign to zero
 	voids, singletons, doubletons := 0, 0, 0
 	maxLen := 0
 	longest := card.Spades
+
 	for suit, length := range suitLengths {
 		switch length {
 		case 0:
@@ -59,17 +62,17 @@ func AnalyzeHand(hand []card.Card) HandFeatures {
 			longest = suit
 		}
 	}
-	// TODO: Calculate points in longest suit (another loop?)
 
 	balanced := (voids == 0 && singletons == 0 && doubletons <= 1)
 	return HandFeatures{
-		HCP:           hcp,
-		SuitLengths:   suitLengths,
-		IsBalanced:    balanced,
-		LongestSuit:   longest,
-		NumVoids:      voids,
-		NumSingletons: singletons,
-		NumDoubletons: doubletons,
+		HCP:               hcp,
+		SuitLengths:       suitLengths,
+		IsBalanced:        balanced,
+		LongestSuit:       longest,
+		LongestSuitLength: maxLen,
+		NumVoids:          voids,
+		NumSingletons:     singletons,
+		NumDoubletons:     doubletons,
 	}
 }
 
@@ -104,7 +107,18 @@ func (r FiveCardMajorRule) Apply(f HandFeatures) (Bid, bool) {
 	return Bid{}, false
 }
 
-// TODO Minor suit opening rule
+type MinorOpening struct{}
+
+func (r MinorOpening) Apply(f HandFeatures) (Bid, bool) {
+	minors := []card.Suit{card.Clubs, card.Diamonds}
+	for _, s := range minors {
+		if f.HCP >= 11 && f.SuitLengths[s] >= 3 && f.LongestSuit == s {
+			return Bid{Level: 1, Trump: s}, true
+		}
+	}
+	return Bid{}, false
+}
+
 // TODO: 2 Clubs rule
 
 func ChooseOpeningBid(features HandFeatures, rules []BidRule) Bid {

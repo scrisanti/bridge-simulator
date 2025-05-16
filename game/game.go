@@ -24,20 +24,21 @@ func Start() {
 		bidding.OneNoTrumpRule{},
 		bidding.FiveCardMajorRule{},
 		// Add more rules as needed
+		bidding.MinorOpening{},
 	}
 
+	// Opening bidding
 	for _, player := range players {
+		log.Logger.Debug(fmt.Sprintf(" ---- Player %s ----", player.GetName()))
+		evalResults := bidding.AnalyzeHand(player.GetHand())
+		log.Logger.Debug(fmt.Sprintf("%+v", evalResults))
+		bid := bidding.ChooseOpeningBid(evalResults, rules)
+		log.Logger.Info(fmt.Sprintf("%v Bid: %v", player.GetName(), bid))
 
-		// Opening bidding
-		bid := bidding.PassBid()
-		for bid.Level == 0 {
-			log.Logger.Debug(fmt.Sprintf(" ---- Player %s ----", player.GetName()))
-			evalResults := bidding.AnalyzeHand(player.GetHand())
-			log.Logger.Debug(fmt.Sprintf("%+v", evalResults))
-			bid := bidding.ChooseOpeningBid(evalResults, rules)
-			log.Logger.Info(fmt.Sprintf("%v Bid: %v", player.GetName(), bid))
+		if bid.Level > 0 {
+			log.Logger.Debug("Entering bidding response mode...")
+			break
 		}
-		log.Logger.Debug("Entering bidding response mode...")
 	}
 }
 
